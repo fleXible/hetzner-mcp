@@ -1,5 +1,8 @@
 export type HetznerMode = 'read_only' | 'read_write';
 
+export type ToolGroup = 'cloud' | 'dns' | 'robot';
+export const ALL_TOOL_GROUPS: ToolGroup[] = ['cloud', 'dns', 'robot'];
+
 export interface CloudConfig {
   token: string;
   baseUrl: string;
@@ -15,6 +18,7 @@ export interface HetznerConfig {
   cloud: CloudConfig | null;
   robot: RobotConfig | null;
   mode: HetznerMode;
+  tools: Set<ToolGroup>;
 }
 
 export function loadConfig(): HetznerConfig {
@@ -39,6 +43,33 @@ export function loadConfig(): HetznerConfig {
 
   const mode = rawMode as HetznerMode;
 
+  // Parse HETZNER_TOOLS — comma-separated list of groups to enable.
+  // Defaults to all groups that have credentials configured.
+  const rawTools = process.env.HETZNER_TOOLS;
+  let tools: Set<ToolGroup>;
+  if (rawTools) {
+    const requested = rawTools.split(',').map((s) => s.trim().toLowerCase());
+    const invalid = requested.filter((g) => !(ALL_TOOL_GROUPS as string[]).includes(g));
+    if (invalid.length > 0) {
+      console.error(
+        `ERROR: HETZNER_TOOLS contains unknown group(s): ${invalid.join(', ')}\n` +
+        `Valid groups: ${ALL_TOOL_GROUPS.join(', ')}`
+      );
+      process.exit(1);
+    }
+    tools = new Set(requested as ToolGroup[]);
+  } else {
+    // Default: enable all groups that have credentials available
+    tools = new Set<ToolGroup>();
+    if (cloudToken) {
+      tools.add('cloud');
+      tools.add('dns');
+    }
+    if (robotUser && robotPassword) {
+      tools.add('robot');
+    }
+  }
+
   return {
     cloud: cloudToken
       ? {
@@ -55,6 +86,7 @@ export function loadConfig(): HetznerConfig {
           }
         : null,
     mode,
+    tools,
   };
 }
 
@@ -70,5 +102,6 @@ export function describeConfig(config: HetznerConfig): string {
   } else {
     lines.push('Robot API: not configured (set HETZNER_ROBOT_USER + HETZNER_ROBOT_PASSWORD)');
   }
+  lines.push(`Tool groups enabled: ${[...config.tools].join(', ') || 'none'}`);
   return lines.join('\n');
 }

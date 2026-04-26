@@ -9,6 +9,7 @@ Production-grade MCP (Model Context Protocol) server for **all three Hetzner API
 - **Hetzner Robot API** — Dedicated servers, reset, Wake-on-LAN, boot configuration (rescue/linux/vnc), SSH keys, IPs, subnets, firewalls, vSwitch, RDNS, traffic, failover
 - **Hetzner DNS API** — Zones, records, bulk operations, zone file import/export
 - **Safety modes** — `read_only` (default) hides all mutating tools; `read_write` enables full access
+- **Tool group filtering** — `HETZNER_TOOLS` selectively enables `cloud`, `dns`, and/or `robot` tool groups
 - **Destructive operation guards** — Delete/rebuild tools require explicit `confirm: true`
 - **Auto-pagination** — List endpoints return all results automatically
 - **Rate limit awareness** — Warnings when approaching API limits
@@ -36,9 +37,31 @@ export HETZNER_ROBOT_PASSWORD=your-robot-password
 
 # Safety mode (default: read_only)
 export HETZNER_MODE=read_only   # or read_write
+
+# Tool groups to enable (default: all configured)
+export HETZNER_TOOLS=cloud,dns,robot
 ```
 
 At least one API must be configured. Tools are only registered for configured APIs.
+
+### Tool Group Filtering
+
+Use `HETZNER_TOOLS` to selectively enable only specific tool groups. The value is a comma-separated list of: `cloud`, `dns`, `robot`.
+
+- If **not set**, all groups with valid credentials are enabled automatically (`cloud` and `dns` when `HETZNER_CLOUD_TOKEN` is set, `robot` when Robot credentials are set).
+- If **set**, only the listed groups are registered — even if credentials for other groups are available.
+
+Examples:
+
+```bash
+# Only DNS and Robot tools (skip Cloud)
+export HETZNER_TOOLS=dns,robot
+
+# Only Cloud tools (skip DNS and Robot)
+export HETZNER_TOOLS=cloud
+```
+
+Invalid group names cause the server to exit with an error.
 
 ## Claude Desktop
 

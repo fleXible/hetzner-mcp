@@ -7,6 +7,7 @@ import { z } from 'zod';
 import type { CloudClient } from './clients/cloud.js';
 import type { RobotClient } from './clients/robot.js';
 import { formatError } from './clients/common.js';
+import type { ToolGroup } from './config.js';
 
 // ── ToolRegistrar ───────────────────────────────────────────────────────────
 
@@ -86,11 +87,12 @@ export function registerAllTools(
   cloud: CloudClient | null,
   robot: RobotClient | null,
   readOnly: boolean,
+  enabledGroups: Set<ToolGroup>,
 ): void {
   const register = createRegistrar(server);
 
-  // ── Cloud + DNS tools ──────────────────────────────────────────────────
-  if (cloud) {
+  // ── Cloud tools ────────────────────────────────────────────────────────
+  if (cloud && enabledGroups.has('cloud')) {
     registerServerTools(register, cloud, readOnly);
     registerServerActionTools(register, cloud, readOnly);
     registerServerTypeTools(register, cloud);
@@ -110,14 +112,16 @@ export function registerAllTools(
     registerLocationTools(register, cloud);
     registerPricingTools(register, cloud);
     registerActionTools(register, cloud);
+  }
 
-    // DNS
+  // ── DNS tools ──────────────────────────────────────────────────────────
+  if (cloud && enabledGroups.has('dns')) {
     registerDnsZoneTools(register, cloud, readOnly);
     registerDnsRecordTools(register, cloud, readOnly);
   }
 
   // ── Robot tools ────────────────────────────────────────────────────────
-  if (robot) {
+  if (robot && enabledGroups.has('robot')) {
     registerRobotServerTools(register, robot, readOnly);
     registerRobotResetTools(register, robot, readOnly);
     registerRobotWolTools(register, robot, readOnly);
