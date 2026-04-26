@@ -24,10 +24,7 @@ export function registerFloatingIpTools(register: ToolRegistrar, cloud: CloudCli
         label_selector: args.label_selector as string | undefined,
         sort: args.sort as string | undefined,
       });
-      let output = JSON.stringify(floatingIps, null, 2);
-      const warning = cloud.rateLimitWarning();
-      if (warning) output += '\n' + warning;
-      return output;
+      return cloud.formatOutput(floatingIps);
     },
   );
 
@@ -39,10 +36,7 @@ export function registerFloatingIpTools(register: ToolRegistrar, cloud: CloudCli
     },
     async (args) => {
       const result = await cloud.request(`/floating_ips/${args.id}`);
-      let output = JSON.stringify(result, null, 2);
-      const warning = cloud.rateLimitWarning();
-      if (warning) output += '\n' + warning;
-      return output;
+      return cloud.formatOutput(result);
     },
   );
 
@@ -54,10 +48,7 @@ export function registerFloatingIpTools(register: ToolRegistrar, cloud: CloudCli
     },
     async (args) => {
       const actions = await cloud.requestAll(`/floating_ips/${args.id}/actions`, 'actions');
-      let output = JSON.stringify(actions, null, 2);
-      const warning = cloud.rateLimitWarning();
-      if (warning) output += '\n' + warning;
-      return output;
+      return cloud.formatOutput(actions);
     },
   );
 
@@ -88,10 +79,7 @@ export function registerFloatingIpTools(register: ToolRegistrar, cloud: CloudCli
           { method: 'POST', body },
         );
         const action = await cloud.pollAction(result.action.id);
-        let output = JSON.stringify({ floating_ip: result.floating_ip, action }, null, 2);
-        const warning = cloud.rateLimitWarning();
-        if (warning) output += '\n' + warning;
-        return output;
+        return cloud.formatOutput({ floating_ip: result.floating_ip, action });
       },
     );
 
@@ -114,10 +102,7 @@ export function registerFloatingIpTools(register: ToolRegistrar, cloud: CloudCli
           method: 'PUT',
           body,
         });
-        let output = JSON.stringify(result, null, 2);
-        const warning = cloud.rateLimitWarning();
-        if (warning) output += '\n' + warning;
-        return output;
+        return cloud.formatOutput(result);
       },
     );
 
@@ -133,10 +118,7 @@ export function registerFloatingIpTools(register: ToolRegistrar, cloud: CloudCli
           return '⚠️ Please set confirm to true to delete this floating IP. This action is irreversible.';
         }
         await cloud.request(`/floating_ips/${args.id}`, { method: 'DELETE' });
-        let output = `Floating IP ${args.id} deleted successfully.`;
-        const warning = cloud.rateLimitWarning();
-        if (warning) output += '\n' + warning;
-        return output;
+        return cloud.appendWarning(`Floating IP ${args.id} deleted successfully.`);
       },
     );
 
@@ -153,10 +135,7 @@ export function registerFloatingIpTools(register: ToolRegistrar, cloud: CloudCli
           { method: 'POST', body: { server: args.server } },
         );
         const action = await cloud.pollAction(result.action.id);
-        let output = JSON.stringify({ action }, null, 2);
-        const warning = cloud.rateLimitWarning();
-        if (warning) output += '\n' + warning;
-        return output;
+        return cloud.formatOutput({ action });
       },
     );
 
@@ -172,10 +151,7 @@ export function registerFloatingIpTools(register: ToolRegistrar, cloud: CloudCli
           { method: 'POST' },
         );
         const action = await cloud.pollAction(result.action.id);
-        let output = JSON.stringify({ action }, null, 2);
-        const warning = cloud.rateLimitWarning();
-        if (warning) output += '\n' + warning;
-        return output;
+        return cloud.formatOutput({ action });
       },
     );
 
@@ -193,10 +169,7 @@ export function registerFloatingIpTools(register: ToolRegistrar, cloud: CloudCli
           { method: 'POST', body: { ip: args.ip, dns_ptr: args.dns_ptr } },
         );
         const action = await cloud.pollAction(result.action.id);
-        let output = JSON.stringify({ action }, null, 2);
-        const warning = cloud.rateLimitWarning();
-        if (warning) output += '\n' + warning;
-        return output;
+        return cloud.formatOutput({ action });
       },
     );
 
@@ -213,10 +186,7 @@ export function registerFloatingIpTools(register: ToolRegistrar, cloud: CloudCli
           { method: 'POST', body: { delete: args.delete } },
         );
         const action = await cloud.pollAction(result.action.id);
-        let output = JSON.stringify({ action }, null, 2);
-        const warning = cloud.rateLimitWarning();
-        if (warning) output += '\n' + warning;
-        return output;
+        return cloud.formatOutput({ action });
       },
     );
   }

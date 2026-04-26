@@ -22,10 +22,7 @@ export function registerNetworkTools(register: ToolRegistrar, cloud: CloudClient
         name: args.name as string | undefined,
         label_selector: args.label_selector as string | undefined,
       });
-      let output = JSON.stringify(networks, null, 2);
-      const warning = cloud.rateLimitWarning();
-      if (warning) output += '\n' + warning;
-      return output;
+      return cloud.formatOutput(networks);
     },
   );
 
@@ -37,10 +34,7 @@ export function registerNetworkTools(register: ToolRegistrar, cloud: CloudClient
     },
     async (args) => {
       const result = await cloud.request(`/networks/${args.id}`);
-      let output = JSON.stringify(result, null, 2);
-      const warning = cloud.rateLimitWarning();
-      if (warning) output += '\n' + warning;
-      return output;
+      return cloud.formatOutput(result);
     },
   );
 
@@ -52,10 +46,7 @@ export function registerNetworkTools(register: ToolRegistrar, cloud: CloudClient
     },
     async (args) => {
       const actions = await cloud.requestAll(`/networks/${args.id}/actions`, 'actions');
-      let output = JSON.stringify(actions, null, 2);
-      const warning = cloud.rateLimitWarning();
-      if (warning) output += '\n' + warning;
-      return output;
+      return cloud.formatOutput(actions);
     },
   );
 
@@ -82,10 +73,7 @@ export function registerNetworkTools(register: ToolRegistrar, cloud: CloudClient
         if (args.labels) body.labels = JSON.parse(args.labels as string);
 
         const result = await cloud.request('/networks', { method: 'POST', body });
-        let output = JSON.stringify(result, null, 2);
-        const warning = cloud.rateLimitWarning();
-        if (warning) output += '\n' + warning;
-        return output;
+        return cloud.formatOutput(result);
       },
     );
 
@@ -106,10 +94,7 @@ export function registerNetworkTools(register: ToolRegistrar, cloud: CloudClient
           method: 'PUT',
           body,
         });
-        let output = JSON.stringify(result, null, 2);
-        const warning = cloud.rateLimitWarning();
-        if (warning) output += '\n' + warning;
-        return output;
+        return cloud.formatOutput(result);
       },
     );
 
@@ -125,10 +110,7 @@ export function registerNetworkTools(register: ToolRegistrar, cloud: CloudClient
           return '⚠️ Please set confirm to true to delete this network. This action is irreversible.';
         }
         await cloud.request(`/networks/${args.id}`, { method: 'DELETE' });
-        let output = `Network ${args.id} deleted successfully.`;
-        const warning = cloud.rateLimitWarning();
-        if (warning) output += '\n' + warning;
-        return output;
+        return cloud.appendWarning(`Network ${args.id} deleted successfully.`);
       },
     );
 
@@ -157,10 +139,7 @@ export function registerNetworkTools(register: ToolRegistrar, cloud: CloudClient
           { method: 'POST', body },
         );
         const action = await cloud.pollAction(result.action.id);
-        let output = JSON.stringify({ action }, null, 2);
-        const warning = cloud.rateLimitWarning();
-        if (warning) output += '\n' + warning;
-        return output;
+        return cloud.formatOutput({ action });
       },
     );
 
@@ -177,10 +156,7 @@ export function registerNetworkTools(register: ToolRegistrar, cloud: CloudClient
           { method: 'POST', body: { ip_range: args.ip_range } },
         );
         const action = await cloud.pollAction(result.action.id);
-        let output = JSON.stringify({ action }, null, 2);
-        const warning = cloud.rateLimitWarning();
-        if (warning) output += '\n' + warning;
-        return output;
+        return cloud.formatOutput({ action });
       },
     );
 
@@ -198,10 +174,7 @@ export function registerNetworkTools(register: ToolRegistrar, cloud: CloudClient
           { method: 'POST', body: { destination: args.destination, gateway: args.gateway } },
         );
         const action = await cloud.pollAction(result.action.id);
-        let output = JSON.stringify({ action }, null, 2);
-        const warning = cloud.rateLimitWarning();
-        if (warning) output += '\n' + warning;
-        return output;
+        return cloud.formatOutput({ action });
       },
     );
 
@@ -219,10 +192,7 @@ export function registerNetworkTools(register: ToolRegistrar, cloud: CloudClient
           { method: 'POST', body: { destination: args.destination, gateway: args.gateway } },
         );
         const action = await cloud.pollAction(result.action.id);
-        let output = JSON.stringify({ action }, null, 2);
-        const warning = cloud.rateLimitWarning();
-        if (warning) output += '\n' + warning;
-        return output;
+        return cloud.formatOutput({ action });
       },
     );
 
@@ -239,10 +209,7 @@ export function registerNetworkTools(register: ToolRegistrar, cloud: CloudClient
           { method: 'POST', body: { ip_range: args.ip_range } },
         );
         const action = await cloud.pollAction(result.action.id);
-        let output = JSON.stringify({ action }, null, 2);
-        const warning = cloud.rateLimitWarning();
-        if (warning) output += '\n' + warning;
-        return output;
+        return cloud.formatOutput({ action });
       },
     );
 
@@ -259,10 +226,7 @@ export function registerNetworkTools(register: ToolRegistrar, cloud: CloudClient
           { method: 'POST', body: { delete: args.delete } },
         );
         const action = await cloud.pollAction(result.action.id);
-        let output = JSON.stringify({ action }, null, 2);
-        const warning = cloud.rateLimitWarning();
-        if (warning) output += '\n' + warning;
-        return output;
+        return cloud.formatOutput({ action });
       },
     );
   }

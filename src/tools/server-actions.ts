@@ -19,10 +19,7 @@ export function registerServerActionTools(register: ToolRegistrar, cloud: CloudC
     },
     async (args) => {
       const actions = await cloud.requestAll<HetznerAction>(`/servers/${args.id}/actions`, 'actions');
-      let output = JSON.stringify(actions, null, 2);
-      const warning = cloud.rateLimitWarning();
-      if (warning) output += '\n' + warning;
-      return output;
+      return cloud.formatOutput(actions);
     },
   );
 
@@ -35,10 +32,7 @@ export function registerServerActionTools(register: ToolRegistrar, cloud: CloudC
     },
     async (args) => {
       const result = await cloud.request<ActionResponse>(`/servers/${args.id}/actions/${args.action_id}`);
-      let output = JSON.stringify(result.action, null, 2);
-      const warning = cloud.rateLimitWarning();
-      if (warning) output += '\n' + warning;
-      return output;
+      return cloud.formatOutput(result.action);
     },
   );
 
@@ -54,10 +48,7 @@ export function registerServerActionTools(register: ToolRegistrar, cloud: CloudC
       async (args) => {
         const result = await cloud.request<ActionResponse>(`/servers/${args.id}/actions/poweron`, { method: 'POST' });
         await cloud.pollAction(result.action.id);
-        let output = JSON.stringify(result.action, null, 2);
-        const warning = cloud.rateLimitWarning();
-        if (warning) output += '\n' + warning;
-        return output;
+        return cloud.formatOutput(result.action);
       },
     );
 
@@ -70,10 +61,7 @@ export function registerServerActionTools(register: ToolRegistrar, cloud: CloudC
       async (args) => {
         const result = await cloud.request<ActionResponse>(`/servers/${args.id}/actions/poweroff`, { method: 'POST' });
         await cloud.pollAction(result.action.id);
-        let output = JSON.stringify(result.action, null, 2);
-        const warning = cloud.rateLimitWarning();
-        if (warning) output += '\n' + warning;
-        return output;
+        return cloud.formatOutput(result.action);
       },
     );
 
@@ -86,10 +74,7 @@ export function registerServerActionTools(register: ToolRegistrar, cloud: CloudC
       async (args) => {
         const result = await cloud.request<ActionResponse>(`/servers/${args.id}/actions/reboot`, { method: 'POST' });
         await cloud.pollAction(result.action.id);
-        let output = JSON.stringify(result.action, null, 2);
-        const warning = cloud.rateLimitWarning();
-        if (warning) output += '\n' + warning;
-        return output;
+        return cloud.formatOutput(result.action);
       },
     );
 
@@ -102,10 +87,7 @@ export function registerServerActionTools(register: ToolRegistrar, cloud: CloudC
       async (args) => {
         const result = await cloud.request<ActionResponse>(`/servers/${args.id}/actions/reset`, { method: 'POST' });
         await cloud.pollAction(result.action.id);
-        let output = JSON.stringify(result.action, null, 2);
-        const warning = cloud.rateLimitWarning();
-        if (warning) output += '\n' + warning;
-        return output;
+        return cloud.formatOutput(result.action);
       },
     );
 
@@ -118,10 +100,7 @@ export function registerServerActionTools(register: ToolRegistrar, cloud: CloudC
       async (args) => {
         const result = await cloud.request<ActionResponse>(`/servers/${args.id}/actions/shutdown`, { method: 'POST' });
         await cloud.pollAction(result.action.id);
-        let output = JSON.stringify(result.action, null, 2);
-        const warning = cloud.rateLimitWarning();
-        if (warning) output += '\n' + warning;
-        return output;
+        return cloud.formatOutput(result.action);
       },
     );
 
@@ -144,10 +123,7 @@ export function registerServerActionTools(register: ToolRegistrar, cloud: CloudC
         if (result.action) {
           await cloud.pollAction(result.action.id);
         }
-        let output = JSON.stringify(result, null, 2);
-        const warning = cloud.rateLimitWarning();
-        if (warning) output += '\n' + warning;
-        return output;
+        return cloud.formatOutput(result);
       },
     );
 
@@ -165,10 +141,7 @@ export function registerServerActionTools(register: ToolRegistrar, cloud: CloudC
           body: { server_type: args.server_type, upgrade_disk: args.upgrade_disk },
         });
         await cloud.pollAction(result.action.id);
-        let output = JSON.stringify(result.action, null, 2);
-        const warning = cloud.rateLimitWarning();
-        if (warning) output += '\n' + warning;
-        return output;
+        return cloud.formatOutput(result.action);
       },
     );
 
@@ -191,10 +164,7 @@ export function registerServerActionTools(register: ToolRegistrar, cloud: CloudC
           { method: 'POST', body },
         );
         await cloud.pollAction(result.action.id);
-        let output = JSON.stringify({ root_password: result.root_password, action: result.action }, null, 2);
-        const warning = cloud.rateLimitWarning();
-        if (warning) output += '\n' + warning;
-        return output;
+        return cloud.formatOutput({ root_password: result.root_password, action: result.action });
       },
     );
 
@@ -207,10 +177,7 @@ export function registerServerActionTools(register: ToolRegistrar, cloud: CloudC
       async (args) => {
         const result = await cloud.request<ActionResponse>(`/servers/${args.id}/actions/disable_rescue`, { method: 'POST' });
         await cloud.pollAction(result.action.id);
-        let output = JSON.stringify(result.action, null, 2);
-        const warning = cloud.rateLimitWarning();
-        if (warning) output += '\n' + warning;
-        return output;
+        return cloud.formatOutput(result.action);
       },
     );
 
@@ -235,10 +202,7 @@ export function registerServerActionTools(register: ToolRegistrar, cloud: CloudC
         if (result.action) {
           await cloud.pollAction(result.action.id);
         }
-        let output = JSON.stringify(result, null, 2);
-        const warning = cloud.rateLimitWarning();
-        if (warning) output += '\n' + warning;
-        return output;
+        return cloud.formatOutput(result);
       },
     );
 
@@ -251,10 +215,7 @@ export function registerServerActionTools(register: ToolRegistrar, cloud: CloudC
       async (args) => {
         const result = await cloud.request<ActionResponse>(`/servers/${args.id}/actions/enable_backup`, { method: 'POST' });
         await cloud.pollAction(result.action.id);
-        let output = JSON.stringify(result.action, null, 2);
-        const warning = cloud.rateLimitWarning();
-        if (warning) output += '\n' + warning;
-        return output;
+        return cloud.formatOutput(result.action);
       },
     );
 
@@ -267,10 +228,7 @@ export function registerServerActionTools(register: ToolRegistrar, cloud: CloudC
       async (args) => {
         const result = await cloud.request<ActionResponse>(`/servers/${args.id}/actions/disable_backup`, { method: 'POST' });
         await cloud.pollAction(result.action.id);
-        let output = JSON.stringify(result.action, null, 2);
-        const warning = cloud.rateLimitWarning();
-        if (warning) output += '\n' + warning;
-        return output;
+        return cloud.formatOutput(result.action);
       },
     );
 
@@ -287,10 +245,7 @@ export function registerServerActionTools(register: ToolRegistrar, cloud: CloudC
           body: { iso: args.iso },
         });
         await cloud.pollAction(result.action.id);
-        let output = JSON.stringify(result.action, null, 2);
-        const warning = cloud.rateLimitWarning();
-        if (warning) output += '\n' + warning;
-        return output;
+        return cloud.formatOutput(result.action);
       },
     );
 
@@ -303,10 +258,7 @@ export function registerServerActionTools(register: ToolRegistrar, cloud: CloudC
       async (args) => {
         const result = await cloud.request<ActionResponse>(`/servers/${args.id}/actions/detach_iso`, { method: 'POST' });
         await cloud.pollAction(result.action.id);
-        let output = JSON.stringify(result.action, null, 2);
-        const warning = cloud.rateLimitWarning();
-        if (warning) output += '\n' + warning;
-        return output;
+        return cloud.formatOutput(result.action);
       },
     );
 
@@ -324,10 +276,7 @@ export function registerServerActionTools(register: ToolRegistrar, cloud: CloudC
           body: { ip: args.ip, dns_ptr: args.dns_ptr || null },
         });
         await cloud.pollAction(result.action.id);
-        let output = JSON.stringify(result.action, null, 2);
-        const warning = cloud.rateLimitWarning();
-        if (warning) output += '\n' + warning;
-        return output;
+        return cloud.formatOutput(result.action);
       },
     );
 
@@ -348,10 +297,7 @@ export function registerServerActionTools(register: ToolRegistrar, cloud: CloudC
           body,
         });
         await cloud.pollAction(result.action.id);
-        let output = JSON.stringify(result.action, null, 2);
-        const warning = cloud.rateLimitWarning();
-        if (warning) output += '\n' + warning;
-        return output;
+        return cloud.formatOutput(result.action);
       },
     );
 
@@ -367,10 +313,7 @@ export function registerServerActionTools(register: ToolRegistrar, cloud: CloudC
           { method: 'POST' },
         );
         await cloud.pollAction(result.action.id);
-        let output = JSON.stringify({ wss_url: result.wss_url, password: result.password }, null, 2);
-        const warning = cloud.rateLimitWarning();
-        if (warning) output += '\n' + warning;
-        return output;
+        return cloud.formatOutput({ wss_url: result.wss_url, password: result.password });
       },
     );
 
@@ -392,10 +335,7 @@ export function registerServerActionTools(register: ToolRegistrar, cloud: CloudC
           body,
         });
         await cloud.pollAction(result.action.id);
-        let output = JSON.stringify(result.action, null, 2);
-        const warning = cloud.rateLimitWarning();
-        if (warning) output += '\n' + warning;
-        return output;
+        return cloud.formatOutput(result.action);
       },
     );
 
@@ -412,10 +352,7 @@ export function registerServerActionTools(register: ToolRegistrar, cloud: CloudC
           body: { network: args.network },
         });
         await cloud.pollAction(result.action.id);
-        let output = JSON.stringify(result.action, null, 2);
-        const warning = cloud.rateLimitWarning();
-        if (warning) output += '\n' + warning;
-        return output;
+        return cloud.formatOutput(result.action);
       },
     );
 
@@ -436,10 +373,7 @@ export function registerServerActionTools(register: ToolRegistrar, cloud: CloudC
           },
         });
         await cloud.pollAction(result.action.id);
-        let output = JSON.stringify(result.action, null, 2);
-        const warning = cloud.rateLimitWarning();
-        if (warning) output += '\n' + warning;
-        return output;
+        return cloud.formatOutput(result.action);
       },
     );
 
@@ -456,10 +390,7 @@ export function registerServerActionTools(register: ToolRegistrar, cloud: CloudC
           body: { placement_group: args.placement_group },
         });
         await cloud.pollAction(result.action.id);
-        let output = JSON.stringify(result.action, null, 2);
-        const warning = cloud.rateLimitWarning();
-        if (warning) output += '\n' + warning;
-        return output;
+        return cloud.formatOutput(result.action);
       },
     );
 
@@ -475,10 +406,7 @@ export function registerServerActionTools(register: ToolRegistrar, cloud: CloudC
           { method: 'POST' },
         );
         await cloud.pollAction(result.action.id);
-        let output = JSON.stringify(result.action, null, 2);
-        const warning = cloud.rateLimitWarning();
-        if (warning) output += '\n' + warning;
-        return output;
+        return cloud.formatOutput(result.action);
       },
     );
   }

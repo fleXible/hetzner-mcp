@@ -28,10 +28,7 @@ export function registerCertificateTools(register: ToolRegistrar, cloud: CloudCl
         sort: args.sort as string | undefined,
       };
       const certs = await cloud.requestAll<CloudCertificate>('/certificates', 'certificates', params);
-      let output = JSON.stringify(certs, null, 2);
-      const warning = cloud.rateLimitWarning();
-      if (warning) output += '\n' + warning;
-      return output;
+      return cloud.formatOutput(certs);
     },
   );
 
@@ -43,10 +40,7 @@ export function registerCertificateTools(register: ToolRegistrar, cloud: CloudCl
     },
     async (args) => {
       const result = await cloud.request<{ certificate: CloudCertificate }>(`/certificates/${args.id}`);
-      let output = JSON.stringify(result.certificate, null, 2);
-      const warning = cloud.rateLimitWarning();
-      if (warning) output += '\n' + warning;
-      return output;
+      return cloud.formatOutput(result.certificate);
     },
   );
 
@@ -58,10 +52,7 @@ export function registerCertificateTools(register: ToolRegistrar, cloud: CloudCl
     },
     async (args) => {
       const result = await cloud.request<ActionsResponse>(`/certificates/${args.id}/actions`);
-      let output = JSON.stringify(result.actions, null, 2);
-      const warning = cloud.rateLimitWarning();
-      if (warning) output += '\n' + warning;
-      return output;
+      return cloud.formatOutput(result.actions);
     },
   );
 
@@ -102,10 +93,7 @@ export function registerCertificateTools(register: ToolRegistrar, cloud: CloudCl
           await cloud.pollAction(result.action.id);
         }
 
-        let output = JSON.stringify(result.certificate, null, 2);
-        const warning = cloud.rateLimitWarning();
-        if (warning) output += '\n' + warning;
-        return output;
+        return cloud.formatOutput(result.certificate);
       },
     );
 
@@ -128,10 +116,7 @@ export function registerCertificateTools(register: ToolRegistrar, cloud: CloudCl
           method: 'PUT',
           body,
         });
-        let output = JSON.stringify(result.certificate, null, 2);
-        const warning = cloud.rateLimitWarning();
-        if (warning) output += '\n' + warning;
-        return output;
+        return cloud.formatOutput(result.certificate);
       },
     );
 
@@ -149,10 +134,7 @@ export function registerCertificateTools(register: ToolRegistrar, cloud: CloudCl
         const result = await cloud.request<Record<string, unknown>>(`/certificates/${args.id}`, {
           method: 'DELETE',
         });
-        let output = JSON.stringify(result, null, 2);
-        const warning = cloud.rateLimitWarning();
-        if (warning) output += '\n' + warning;
-        return output;
+        return cloud.formatOutput(result);
       },
     );
 
@@ -170,10 +152,7 @@ export function registerCertificateTools(register: ToolRegistrar, cloud: CloudCl
         if (result.action) {
           await cloud.pollAction(result.action.id);
         }
-        let output = JSON.stringify(result.action, null, 2);
-        const warning = cloud.rateLimitWarning();
-        if (warning) output += '\n' + warning;
-        return output;
+        return cloud.formatOutput(result.action);
       },
     );
   }

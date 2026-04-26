@@ -27,10 +27,7 @@ export function registerSshKeyTools(register: ToolRegistrar, cloud: CloudClient,
         sort: args.sort as string | undefined,
       };
       const keys = await cloud.requestAll<CloudSSHKey>('/ssh_keys', 'ssh_keys', params);
-      let output = JSON.stringify(keys, null, 2);
-      const warning = cloud.rateLimitWarning();
-      if (warning) output += '\n' + warning;
-      return output;
+      return cloud.formatOutput(keys);
     },
   );
 
@@ -42,10 +39,7 @@ export function registerSshKeyTools(register: ToolRegistrar, cloud: CloudClient,
     },
     async (args) => {
       const result = await cloud.request<{ ssh_key: CloudSSHKey }>(`/ssh_keys/${args.id}`);
-      let output = JSON.stringify(result.ssh_key, null, 2);
-      const warning = cloud.rateLimitWarning();
-      if (warning) output += '\n' + warning;
-      return output;
+      return cloud.formatOutput(result.ssh_key);
     },
   );
 
@@ -73,10 +67,7 @@ export function registerSshKeyTools(register: ToolRegistrar, cloud: CloudClient,
           method: 'POST',
           body,
         });
-        let output = JSON.stringify(result.ssh_key, null, 2);
-        const warning = cloud.rateLimitWarning();
-        if (warning) output += '\n' + warning;
-        return output;
+        return cloud.formatOutput(result.ssh_key);
       },
     );
 
@@ -99,10 +90,7 @@ export function registerSshKeyTools(register: ToolRegistrar, cloud: CloudClient,
           method: 'PUT',
           body,
         });
-        let output = JSON.stringify(result.ssh_key, null, 2);
-        const warning = cloud.rateLimitWarning();
-        if (warning) output += '\n' + warning;
-        return output;
+        return cloud.formatOutput(result.ssh_key);
       },
     );
 
@@ -120,10 +108,7 @@ export function registerSshKeyTools(register: ToolRegistrar, cloud: CloudClient,
         const result = await cloud.request<Record<string, unknown>>(`/ssh_keys/${args.id}`, {
           method: 'DELETE',
         });
-        let output = JSON.stringify(result, null, 2);
-        const warning = cloud.rateLimitWarning();
-        if (warning) output += '\n' + warning;
-        return output;
+        return cloud.formatOutput(result);
       },
     );
   }

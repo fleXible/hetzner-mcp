@@ -28,10 +28,7 @@ export function registerLoadBalancerTypeTools(register: ToolRegistrar, cloud: Cl
     {},
     async () => {
       const types = await cloud.requestAll<CloudLoadBalancerType>('/load_balancer_types', 'load_balancer_types');
-      let output = JSON.stringify(types, null, 2);
-      const warning = cloud.rateLimitWarning();
-      if (warning) output += '\n' + warning;
-      return output;
+      return cloud.formatOutput(types);
     },
   );
 
@@ -43,10 +40,7 @@ export function registerLoadBalancerTypeTools(register: ToolRegistrar, cloud: Cl
     },
     async (args) => {
       const result = await cloud.request<{ load_balancer_type: CloudLoadBalancerType }>(`/load_balancer_types/${args.id}`);
-      let output = JSON.stringify(result.load_balancer_type, null, 2);
-      const warning = cloud.rateLimitWarning();
-      if (warning) output += '\n' + warning;
-      return output;
+      return cloud.formatOutput(result.load_balancer_type);
     },
   );
 }

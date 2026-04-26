@@ -21,10 +21,7 @@ export function registerDatacenterTools(register: ToolRegistrar, cloud: CloudCli
         sort: args.sort as string | undefined,
       };
       const datacenters = await cloud.requestAll<CloudDatacenter>('/datacenters', 'datacenters', params);
-      let output = JSON.stringify(datacenters, null, 2);
-      const warning = cloud.rateLimitWarning();
-      if (warning) output += '\n' + warning;
-      return output;
+      return cloud.formatOutput(datacenters);
     },
   );
 
@@ -36,10 +33,7 @@ export function registerDatacenterTools(register: ToolRegistrar, cloud: CloudCli
     },
     async (args) => {
       const result = await cloud.request<{ datacenter: CloudDatacenter }>(`/datacenters/${args.id}`);
-      let output = JSON.stringify(result.datacenter, null, 2);
-      const warning = cloud.rateLimitWarning();
-      if (warning) output += '\n' + warning;
-      return output;
+      return cloud.formatOutput(result.datacenter);
     },
   );
 }

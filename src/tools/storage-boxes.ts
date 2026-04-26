@@ -16,10 +16,7 @@ export function registerStorageBoxTools(register: ToolRegistrar, cloud: CloudCli
     {},
     async () => {
       const storageBoxes = await cloud.requestAll<CloudStorageBox>('/storage_boxes', 'storage_boxes');
-      let output = JSON.stringify(storageBoxes, null, 2);
-      const warning = cloud.rateLimitWarning();
-      if (warning) output += '\n' + warning;
-      return output;
+      return cloud.formatOutput(storageBoxes);
     },
   );
 
@@ -31,10 +28,7 @@ export function registerStorageBoxTools(register: ToolRegistrar, cloud: CloudCli
     },
     async (args) => {
       const result = await cloud.request<{ storage_box: CloudStorageBox }>(`/storage_boxes/${args.id}`);
-      let output = JSON.stringify(result.storage_box, null, 2);
-      const warning = cloud.rateLimitWarning();
-      if (warning) output += '\n' + warning;
-      return output;
+      return cloud.formatOutput(result.storage_box);
     },
   );
 
@@ -60,10 +54,7 @@ export function registerStorageBoxTools(register: ToolRegistrar, cloud: CloudCli
           method: 'PUT',
           body,
         });
-        let output = JSON.stringify(result.storage_box, null, 2);
-        const warning = cloud.rateLimitWarning();
-        if (warning) output += '\n' + warning;
-        return output;
+        return cloud.formatOutput(result.storage_box);
       },
     );
   }

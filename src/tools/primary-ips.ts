@@ -26,10 +26,7 @@ export function registerPrimaryIpTools(register: ToolRegistrar, cloud: CloudClie
         ip: args.ip as string | undefined,
         sort: args.sort as string | undefined,
       });
-      let output = JSON.stringify(primaryIps, null, 2);
-      const warning = cloud.rateLimitWarning();
-      if (warning) output += '\n' + warning;
-      return output;
+      return cloud.formatOutput(primaryIps);
     },
   );
 
@@ -41,10 +38,7 @@ export function registerPrimaryIpTools(register: ToolRegistrar, cloud: CloudClie
     },
     async (args) => {
       const result = await cloud.request(`/primary_ips/${args.id}`);
-      let output = JSON.stringify(result, null, 2);
-      const warning = cloud.rateLimitWarning();
-      if (warning) output += '\n' + warning;
-      return output;
+      return cloud.formatOutput(result);
     },
   );
 
@@ -75,10 +69,7 @@ export function registerPrimaryIpTools(register: ToolRegistrar, cloud: CloudClie
         if (args.labels) body.labels = JSON.parse(args.labels as string);
 
         const result = await cloud.request('/primary_ips', { method: 'POST', body });
-        let output = JSON.stringify(result, null, 2);
-        const warning = cloud.rateLimitWarning();
-        if (warning) output += '\n' + warning;
-        return output;
+        return cloud.formatOutput(result);
       },
     );
 
@@ -101,10 +92,7 @@ export function registerPrimaryIpTools(register: ToolRegistrar, cloud: CloudClie
           method: 'PUT',
           body,
         });
-        let output = JSON.stringify(result, null, 2);
-        const warning = cloud.rateLimitWarning();
-        if (warning) output += '\n' + warning;
-        return output;
+        return cloud.formatOutput(result);
       },
     );
 
@@ -120,10 +108,7 @@ export function registerPrimaryIpTools(register: ToolRegistrar, cloud: CloudClie
           return '⚠️ Please set confirm to true to delete this primary IP. This action is irreversible.';
         }
         await cloud.request(`/primary_ips/${args.id}`, { method: 'DELETE' });
-        let output = `Primary IP ${args.id} deleted successfully.`;
-        const warning = cloud.rateLimitWarning();
-        if (warning) output += '\n' + warning;
-        return output;
+        return cloud.appendWarning(`Primary IP ${args.id} deleted successfully.`);
       },
     );
 
@@ -141,10 +126,7 @@ export function registerPrimaryIpTools(register: ToolRegistrar, cloud: CloudClie
           { method: 'POST', body: { assignee_id: args.assignee_id, assignee_type: args.assignee_type } },
         );
         const action = await cloud.pollAction(result.action.id);
-        let output = JSON.stringify({ action }, null, 2);
-        const warning = cloud.rateLimitWarning();
-        if (warning) output += '\n' + warning;
-        return output;
+        return cloud.formatOutput({ action });
       },
     );
 
@@ -160,10 +142,7 @@ export function registerPrimaryIpTools(register: ToolRegistrar, cloud: CloudClie
           { method: 'POST' },
         );
         const action = await cloud.pollAction(result.action.id);
-        let output = JSON.stringify({ action }, null, 2);
-        const warning = cloud.rateLimitWarning();
-        if (warning) output += '\n' + warning;
-        return output;
+        return cloud.formatOutput({ action });
       },
     );
 
@@ -181,10 +160,7 @@ export function registerPrimaryIpTools(register: ToolRegistrar, cloud: CloudClie
           { method: 'POST', body: { ip: args.ip, dns_ptr: args.dns_ptr } },
         );
         const action = await cloud.pollAction(result.action.id);
-        let output = JSON.stringify({ action }, null, 2);
-        const warning = cloud.rateLimitWarning();
-        if (warning) output += '\n' + warning;
-        return output;
+        return cloud.formatOutput({ action });
       },
     );
 
@@ -201,10 +177,7 @@ export function registerPrimaryIpTools(register: ToolRegistrar, cloud: CloudClie
           { method: 'POST', body: { delete: args.delete } },
         );
         const action = await cloud.pollAction(result.action.id);
-        let output = JSON.stringify({ action }, null, 2);
-        const warning = cloud.rateLimitWarning();
-        if (warning) output += '\n' + warning;
-        return output;
+        return cloud.formatOutput({ action });
       },
     );
   }

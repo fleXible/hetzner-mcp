@@ -27,10 +27,7 @@ export function registerPlacementGroupTools(register: ToolRegistrar, cloud: Clou
         sort: args.sort as string | undefined,
       };
       const groups = await cloud.requestAll<CloudPlacementGroup>('/placement_groups', 'placement_groups', params);
-      let output = JSON.stringify(groups, null, 2);
-      const warning = cloud.rateLimitWarning();
-      if (warning) output += '\n' + warning;
-      return output;
+      return cloud.formatOutput(groups);
     },
   );
 
@@ -42,10 +39,7 @@ export function registerPlacementGroupTools(register: ToolRegistrar, cloud: Clou
     },
     async (args) => {
       const result = await cloud.request<{ placement_group: CloudPlacementGroup }>(`/placement_groups/${args.id}`);
-      let output = JSON.stringify(result.placement_group, null, 2);
-      const warning = cloud.rateLimitWarning();
-      if (warning) output += '\n' + warning;
-      return output;
+      return cloud.formatOutput(result.placement_group);
     },
   );
 
@@ -73,10 +67,7 @@ export function registerPlacementGroupTools(register: ToolRegistrar, cloud: Clou
           method: 'POST',
           body,
         });
-        let output = JSON.stringify(result.placement_group, null, 2);
-        const warning = cloud.rateLimitWarning();
-        if (warning) output += '\n' + warning;
-        return output;
+        return cloud.formatOutput(result.placement_group);
       },
     );
 
@@ -99,10 +90,7 @@ export function registerPlacementGroupTools(register: ToolRegistrar, cloud: Clou
           method: 'PUT',
           body,
         });
-        let output = JSON.stringify(result.placement_group, null, 2);
-        const warning = cloud.rateLimitWarning();
-        if (warning) output += '\n' + warning;
-        return output;
+        return cloud.formatOutput(result.placement_group);
       },
     );
 
@@ -120,10 +108,7 @@ export function registerPlacementGroupTools(register: ToolRegistrar, cloud: Clou
         const result = await cloud.request<Record<string, unknown>>(`/placement_groups/${args.id}`, {
           method: 'DELETE',
         });
-        let output = JSON.stringify(result, null, 2);
-        const warning = cloud.rateLimitWarning();
-        if (warning) output += '\n' + warning;
-        return output;
+        return cloud.formatOutput(result);
       },
     );
   }
