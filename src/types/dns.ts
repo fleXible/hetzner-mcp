@@ -1,125 +1,131 @@
 /**
- * Hetzner DNS API response types.
- * DNS is integrated into the Cloud API under /dns/zones and /dns/records.
+ * Hetzner Cloud API DNS types — Zones and RRSets.
+ * Based on the Cloud API spec at /zones and /zones/{id_or_name}/rrsets.
  */
+
+import type { HetznerAction } from '../clients/common.js';
 
 // ── Zones ───────────────────────────────────────────────────────────────────
 
-export interface DnsZone {
-  id: string;
-  name: string;
-  ttl: number;
-  registrar: string;
-  legacy_dns_host: string;
-  legacy_ns: string[];
-  ns: string[];
-  created: string;
-  verified: string;
-  modified: string;
-  project: string;
-  owner: string;
-  permission: string;
-  zone_type: {
-    id: string;
-    name: string;
-    description: string;
-    prices: unknown;
-  };
-  status: 'verified' | 'failed' | 'pending';
-  paused: boolean;
-  is_secondary_dns: boolean;
-  txt_verification: {
-    name: string;
-    token: string;
-  };
-  records_count: number;
+export interface DnsPrimaryNameserver {
+  address: string;
+  port?: number;
+  tsig_key?: string;
+  tsig_algorithm?: 'hmac-md5' | 'hmac-sha1' | 'hmac-sha256';
 }
 
-// ── Records ─────────────────────────────────────────────────────────────────
+export interface DnsZoneProtection {
+  delete: boolean;
+}
 
-export type DnsRecordType =
+export interface DnsAuthoritativeNameservers {
+  assigned: string[];
+  delegated: string[];
+  delegation_last_check: string | null;
+  delegation_status?: 'valid' | 'partially-valid' | 'invalid' | 'lame' | 'unregistered' | 'unknown';
+}
+
+export interface DnsZone {
+  id: number;
+  name: string;
+  mode: 'primary' | 'secondary';
+  created: string;
+  primary_nameservers: DnsPrimaryNameserver[];
+  labels: Record<string, string>;
+  protection: DnsZoneProtection;
+  ttl: number;
+  status: 'ok' | 'updating' | 'error';
+  record_count: number;
+  authoritative_nameservers: DnsAuthoritativeNameservers;
+  registrar: 'hetzner' | 'other' | 'unknown';
+}
+
+// ── RRSets ──────────────────────────────────────────────────────────────────
+
+export type DnsRRSetType =
   | 'A'
   | 'AAAA'
-  | 'NS'
-  | 'MX'
+  | 'CAA'
   | 'CNAME'
-  | 'RP'
-  | 'TXT'
-  | 'SOA'
-  | 'HINFO'
-  | 'SRV'
-  | 'DANE'
-  | 'TLSA'
   | 'DS'
-  | 'CAA';
+  | 'HINFO'
+  | 'HTTPS'
+  | 'MX'
+  | 'NS'
+  | 'PTR'
+  | 'RP'
+  | 'SOA'
+  | 'SRV'
+  | 'SVCB'
+  | 'TLSA'
+  | 'TXT';
 
-export interface DnsRecord {
-  id: string;
-  type: DnsRecordType;
-  name: string;
+export interface DnsRRSetRecord {
   value: string;
-  zone_id: string;
-  created: string;
-  modified: string;
-  ttl?: number;
+  comment?: string;
+}
+
+/** Record in update_records action where comment is required */
+export interface DnsRRSetRecordUpdate {
+  value: string;
+  comment: string;
+}
+
+export interface DnsRRSetProtection {
+  change: boolean;
+}
+
+export interface DnsRRSet {
+  id: string;
+  name: string;
+  type: DnsRRSetType;
+  ttl: number | null;
+  labels: Record<string, string>;
+  protection: DnsRRSetProtection;
+  records: DnsRRSetRecord[];
+  zone: number;
 }
 
 // ── Response Wrappers ───────────────────────────────────────────────────────
 
+export interface DnsPaginationMeta {
+  pagination: {
+    page: number;
+    per_page: number;
+    previous_page: number | null;
+    next_page: number | null;
+    last_page: number | null;
+    total_entries: number | null;
+  };
+}
+
 export interface DnsZonesResponse {
   zones: DnsZone[];
-  meta: {
-    pagination: {
-      page: number;
-      per_page: number;
-      last_page: number;
-      total_entries: number;
-    };
-  };
+  meta: DnsPaginationMeta;
 }
 
 export interface DnsZoneResponse {
   zone: DnsZone;
 }
 
-export interface DnsRecordsResponse {
-  records: DnsRecord[];
-  meta?: {
-    pagination: {
-      page: number;
-      per_page: number;
-      last_page: number;
-      total_entries: number;
-    };
-  };
+export interface DnsCreateZoneResponse {
+  zone: DnsZone;
+  action: HetznerAction;
 }
 
-export interface DnsRecordResponse {
-  record: DnsRecord;
+export interface DnsActionResponse {
+  action: HetznerAction;
 }
 
-export interface DnsBulkCreateResponse {
-  records: DnsRecord[];
-  valid_records: DnsRecord[];
-  invalid_records: Array<{
-    record: Partial<DnsRecord>;
-    message: string;
-  }>;
+export interface DnsZonefileResponse {
+  zonefile: string;
 }
 
-export interface DnsValidationResponse {
-  parsed_records: number;
-  valid_records: Array<{
-    name: string;
-    type: string;
-    value: string;
-    ttl: number;
-  }>;
+export interface DnsRRSetsResponse {
+  rrsets: DnsRRSet[];
+  meta: DnsPaginationMeta;
 }
 
-export interface DnsError {
-  error: {
-    message: string;
-    code: number;
-  };
+export interface DnsRRSetResponse {
+  rrset: DnsRRSet;
 }

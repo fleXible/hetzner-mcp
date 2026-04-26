@@ -167,4 +167,20 @@ export class CloudClient {
     }
     return null;
   }
+
+  /**
+   * Serializes data to JSON and appends a rate-limit warning if applicable.
+   */
+  formatOutput(data: unknown): string {
+    return this.appendWarning(JSON.stringify(data, null, 2));
+  }
+
+  /**
+   * Appends a rate-limit warning to a pre-formatted output string if applicable.
+   */
+  appendWarning(output: string): string {
+    const warning = this.rateLimitWarning();
+    if (warning) output += '\n' + warning;
+    return output;
+  }
 }
