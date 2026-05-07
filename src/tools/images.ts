@@ -33,10 +33,7 @@ export function registerImageTools(register: ToolRegistrar, cloud: CloudClient, 
         architecture: args.architecture as string | undefined,
       };
       const images = await cloud.requestAll<CloudImage>('/images', 'images', params);
-      let output = JSON.stringify(images, null, 2);
-      const warning = cloud.rateLimitWarning();
-      if (warning) output += '\n' + warning;
-      return output;
+      return cloud.formatOutput(images);
     },
   );
 
@@ -48,10 +45,7 @@ export function registerImageTools(register: ToolRegistrar, cloud: CloudClient, 
     },
     async (args) => {
       const result = await cloud.request<{ image: CloudImage }>(`/images/${args.id}`);
-      let output = JSON.stringify(result.image, null, 2);
-      const warning = cloud.rateLimitWarning();
-      if (warning) output += '\n' + warning;
-      return output;
+      return cloud.formatOutput(result.image);
     },
   );
 
@@ -63,10 +57,7 @@ export function registerImageTools(register: ToolRegistrar, cloud: CloudClient, 
     },
     async (args) => {
       const actions = await cloud.requestAll<HetznerAction>(`/images/${args.id}/actions`, 'actions');
-      let output = JSON.stringify(actions, null, 2);
-      const warning = cloud.rateLimitWarning();
-      if (warning) output += '\n' + warning;
-      return output;
+      return cloud.formatOutput(actions);
     },
   );
 
@@ -94,10 +85,7 @@ export function registerImageTools(register: ToolRegistrar, cloud: CloudClient, 
           method: 'PUT',
           body,
         });
-        let output = JSON.stringify(result.image, null, 2);
-        const warning = cloud.rateLimitWarning();
-        if (warning) output += '\n' + warning;
-        return output;
+        return cloud.formatOutput(result.image);
       },
     );
 
@@ -113,10 +101,7 @@ export function registerImageTools(register: ToolRegistrar, cloud: CloudClient, 
           return 'Deletion not confirmed. Set confirm=true to proceed with deleting this image.';
         }
         await cloud.request(`/images/${args.id}`, { method: 'DELETE' });
-        let output = JSON.stringify({ deleted: true, id: args.id }, null, 2);
-        const warning = cloud.rateLimitWarning();
-        if (warning) output += '\n' + warning;
-        return output;
+        return cloud.formatOutput({ deleted: true, id: args.id });
       },
     );
 
@@ -133,10 +118,7 @@ export function registerImageTools(register: ToolRegistrar, cloud: CloudClient, 
           body: { delete: args.delete_protection },
         });
         await cloud.pollAction(result.action.id);
-        let output = JSON.stringify(result.action, null, 2);
-        const warning = cloud.rateLimitWarning();
-        if (warning) output += '\n' + warning;
-        return output;
+        return cloud.formatOutput(result.action);
       },
     );
   }

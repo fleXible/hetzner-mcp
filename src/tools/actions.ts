@@ -19,10 +19,7 @@ export function registerActionTools(register: ToolRegistrar, cloud: CloudClient)
     },
     async (args) => {
       const result = await cloud.request<{ action: HetznerAction }>(`/actions/${args.id}`);
-      let output = JSON.stringify(result.action, null, 2);
-      const warning = cloud.rateLimitWarning();
-      if (warning) output += '\n' + warning;
-      return output;
+      return cloud.formatOutput(result.action);
     },
   );
 }

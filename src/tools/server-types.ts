@@ -14,10 +14,7 @@ export function registerServerTypeTools(register: ToolRegistrar, cloud: CloudCli
     {},
     async () => {
       const serverTypes = await cloud.requestAll<CloudServerType>('/server_types', 'server_types');
-      let output = JSON.stringify(serverTypes, null, 2);
-      const warning = cloud.rateLimitWarning();
-      if (warning) output += '\n' + warning;
-      return output;
+      return cloud.formatOutput(serverTypes);
     },
   );
 
@@ -29,10 +26,7 @@ export function registerServerTypeTools(register: ToolRegistrar, cloud: CloudCli
     },
     async (args) => {
       const result = await cloud.request<{ server_type: CloudServerType }>(`/server_types/${args.id}`);
-      let output = JSON.stringify(result.server_type, null, 2);
-      const warning = cloud.rateLimitWarning();
-      if (warning) output += '\n' + warning;
-      return output;
+      return cloud.formatOutput(result.server_type);
     },
   );
 }

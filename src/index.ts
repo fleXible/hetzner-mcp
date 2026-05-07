@@ -25,7 +25,7 @@ async function main(): Promise<void> {
   });
 
   // Register all tools
-  registerAllTools(server, cloud, robot, readOnly);
+  registerAllTools(server, cloud, robot, readOnly, config.tools);
 
   // Log configuration (to stderr so it doesn't interfere with stdio transport)
   console.error('hetzner-mcp starting...');

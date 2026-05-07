@@ -26,10 +26,7 @@ export function registerLoadBalancerTools(register: ToolRegistrar, cloud: CloudC
         sort: args.sort as string | undefined,
       };
       const lbs = await cloud.requestAll<CloudLoadBalancer>('/load_balancers', 'load_balancers', params);
-      let output = JSON.stringify(lbs, null, 2);
-      const warning = cloud.rateLimitWarning();
-      if (warning) output += '\n' + warning;
-      return output;
+      return cloud.formatOutput(lbs);
     },
   );
 
@@ -41,10 +38,7 @@ export function registerLoadBalancerTools(register: ToolRegistrar, cloud: CloudC
     },
     async (args) => {
       const result = await cloud.request<{ load_balancer: CloudLoadBalancer }>(`/load_balancers/${args.id}`);
-      let output = JSON.stringify(result.load_balancer, null, 2);
-      const warning = cloud.rateLimitWarning();
-      if (warning) output += '\n' + warning;
-      return output;
+      return cloud.formatOutput(result.load_balancer);
     },
   );
 
@@ -65,10 +59,7 @@ export function registerLoadBalancerTools(register: ToolRegistrar, cloud: CloudC
           end: args.end as string,
         },
       });
-      let output = JSON.stringify(result.metrics, null, 2);
-      const warning = cloud.rateLimitWarning();
-      if (warning) output += '\n' + warning;
-      return output;
+      return cloud.formatOutput(result.metrics);
     },
   );
 
@@ -80,10 +71,7 @@ export function registerLoadBalancerTools(register: ToolRegistrar, cloud: CloudC
     },
     async (args) => {
       const result = await cloud.request<ActionsResponse>(`/load_balancers/${args.id}/actions`);
-      let output = JSON.stringify(result.actions, null, 2);
-      const warning = cloud.rateLimitWarning();
-      if (warning) output += '\n' + warning;
-      return output;
+      return cloud.formatOutput(result.actions);
     },
   );
 
@@ -130,10 +118,7 @@ export function registerLoadBalancerTools(register: ToolRegistrar, cloud: CloudC
           await cloud.pollAction(result.action.id);
         }
 
-        let output = JSON.stringify(result.load_balancer, null, 2);
-        const warning = cloud.rateLimitWarning();
-        if (warning) output += '\n' + warning;
-        return output;
+        return cloud.formatOutput(result.load_balancer);
       },
     );
 
@@ -156,10 +141,7 @@ export function registerLoadBalancerTools(register: ToolRegistrar, cloud: CloudC
           method: 'PUT',
           body,
         });
-        let output = JSON.stringify(result.load_balancer, null, 2);
-        const warning = cloud.rateLimitWarning();
-        if (warning) output += '\n' + warning;
-        return output;
+        return cloud.formatOutput(result.load_balancer);
       },
     );
 
@@ -177,10 +159,7 @@ export function registerLoadBalancerTools(register: ToolRegistrar, cloud: CloudC
         const result = await cloud.request<Record<string, unknown>>(`/load_balancers/${args.id}`, {
           method: 'DELETE',
         });
-        let output = JSON.stringify(result, null, 2);
-        const warning = cloud.rateLimitWarning();
-        if (warning) output += '\n' + warning;
-        return output;
+        return cloud.formatOutput(result);
       },
     );
 
@@ -209,10 +188,7 @@ export function registerLoadBalancerTools(register: ToolRegistrar, cloud: CloudC
         if (result.action) {
           await cloud.pollAction(result.action.id);
         }
-        let output = JSON.stringify(result.action, null, 2);
-        const warning = cloud.rateLimitWarning();
-        if (warning) output += '\n' + warning;
-        return output;
+        return cloud.formatOutput(result.action);
       },
     );
 
@@ -239,10 +215,7 @@ export function registerLoadBalancerTools(register: ToolRegistrar, cloud: CloudC
         if (result.action) {
           await cloud.pollAction(result.action.id);
         }
-        let output = JSON.stringify(result.action, null, 2);
-        const warning = cloud.rateLimitWarning();
-        if (warning) output += '\n' + warning;
-        return output;
+        return cloud.formatOutput(result.action);
       },
     );
 
@@ -263,10 +236,7 @@ export function registerLoadBalancerTools(register: ToolRegistrar, cloud: CloudC
         if (result.action) {
           await cloud.pollAction(result.action.id);
         }
-        let output = JSON.stringify(result.action, null, 2);
-        const warning = cloud.rateLimitWarning();
-        if (warning) output += '\n' + warning;
-        return output;
+        return cloud.formatOutput(result.action);
       },
     );
 
@@ -287,10 +257,7 @@ export function registerLoadBalancerTools(register: ToolRegistrar, cloud: CloudC
         if (result.action) {
           await cloud.pollAction(result.action.id);
         }
-        let output = JSON.stringify(result.action, null, 2);
-        const warning = cloud.rateLimitWarning();
-        if (warning) output += '\n' + warning;
-        return output;
+        return cloud.formatOutput(result.action);
       },
     );
 
@@ -309,10 +276,7 @@ export function registerLoadBalancerTools(register: ToolRegistrar, cloud: CloudC
         if (result.action) {
           await cloud.pollAction(result.action.id);
         }
-        let output = JSON.stringify(result.action, null, 2);
-        const warning = cloud.rateLimitWarning();
-        if (warning) output += '\n' + warning;
-        return output;
+        return cloud.formatOutput(result.action);
       },
     );
 
@@ -331,10 +295,7 @@ export function registerLoadBalancerTools(register: ToolRegistrar, cloud: CloudC
         if (result.action) {
           await cloud.pollAction(result.action.id);
         }
-        let output = JSON.stringify(result.action, null, 2);
-        const warning = cloud.rateLimitWarning();
-        if (warning) output += '\n' + warning;
-        return output;
+        return cloud.formatOutput(result.action);
       },
     );
 
@@ -353,10 +314,7 @@ export function registerLoadBalancerTools(register: ToolRegistrar, cloud: CloudC
         if (result.action) {
           await cloud.pollAction(result.action.id);
         }
-        let output = JSON.stringify(result.action, null, 2);
-        const warning = cloud.rateLimitWarning();
-        if (warning) output += '\n' + warning;
-        return output;
+        return cloud.formatOutput(result.action);
       },
     );
 
@@ -375,10 +333,7 @@ export function registerLoadBalancerTools(register: ToolRegistrar, cloud: CloudC
         if (result.action) {
           await cloud.pollAction(result.action.id);
         }
-        let output = JSON.stringify(result.action, null, 2);
-        const warning = cloud.rateLimitWarning();
-        if (warning) output += '\n' + warning;
-        return output;
+        return cloud.formatOutput(result.action);
       },
     );
 
@@ -398,10 +353,7 @@ export function registerLoadBalancerTools(register: ToolRegistrar, cloud: CloudC
         if (result.action) {
           await cloud.pollAction(result.action.id);
         }
-        let output = JSON.stringify(result.action, null, 2);
-        const warning = cloud.rateLimitWarning();
-        if (warning) output += '\n' + warning;
-        return output;
+        return cloud.formatOutput(result.action);
       },
     );
 
@@ -424,10 +376,7 @@ export function registerLoadBalancerTools(register: ToolRegistrar, cloud: CloudC
         if (result.action) {
           await cloud.pollAction(result.action.id);
         }
-        let output = JSON.stringify(result.action, null, 2);
-        const warning = cloud.rateLimitWarning();
-        if (warning) output += '\n' + warning;
-        return output;
+        return cloud.formatOutput(result.action);
       },
     );
 
@@ -446,10 +395,7 @@ export function registerLoadBalancerTools(register: ToolRegistrar, cloud: CloudC
         if (result.action) {
           await cloud.pollAction(result.action.id);
         }
-        let output = JSON.stringify(result.action, null, 2);
-        const warning = cloud.rateLimitWarning();
-        if (warning) output += '\n' + warning;
-        return output;
+        return cloud.formatOutput(result.action);
       },
     );
 
@@ -467,10 +413,7 @@ export function registerLoadBalancerTools(register: ToolRegistrar, cloud: CloudC
         if (result.action) {
           await cloud.pollAction(result.action.id);
         }
-        let output = JSON.stringify(result.action, null, 2);
-        const warning = cloud.rateLimitWarning();
-        if (warning) output += '\n' + warning;
-        return output;
+        return cloud.formatOutput(result.action);
       },
     );
 
@@ -488,10 +431,7 @@ export function registerLoadBalancerTools(register: ToolRegistrar, cloud: CloudC
         if (result.action) {
           await cloud.pollAction(result.action.id);
         }
-        let output = JSON.stringify(result.action, null, 2);
-        const warning = cloud.rateLimitWarning();
-        if (warning) output += '\n' + warning;
-        return output;
+        return cloud.formatOutput(result.action);
       },
     );
   }

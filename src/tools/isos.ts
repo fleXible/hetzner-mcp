@@ -21,10 +21,7 @@ export function registerIsoTools(register: ToolRegistrar, cloud: CloudClient): v
         architecture: args.architecture as string | undefined,
       };
       const isos = await cloud.requestAll<CloudISO>('/isos', 'isos', params);
-      let output = JSON.stringify(isos, null, 2);
-      const warning = cloud.rateLimitWarning();
-      if (warning) output += '\n' + warning;
-      return output;
+      return cloud.formatOutput(isos);
     },
   );
 
@@ -36,10 +33,7 @@ export function registerIsoTools(register: ToolRegistrar, cloud: CloudClient): v
     },
     async (args) => {
       const result = await cloud.request<{ iso: CloudISO }>(`/isos/${args.id}`);
-      let output = JSON.stringify(result.iso, null, 2);
-      const warning = cloud.rateLimitWarning();
-      if (warning) output += '\n' + warning;
-      return output;
+      return cloud.formatOutput(result.iso);
     },
   );
 }

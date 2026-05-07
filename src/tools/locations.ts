@@ -21,10 +21,7 @@ export function registerLocationTools(register: ToolRegistrar, cloud: CloudClien
         sort: args.sort as string | undefined,
       };
       const locations = await cloud.requestAll<CloudLocation>('/locations', 'locations', params);
-      let output = JSON.stringify(locations, null, 2);
-      const warning = cloud.rateLimitWarning();
-      if (warning) output += '\n' + warning;
-      return output;
+      return cloud.formatOutput(locations);
     },
   );
 
@@ -36,10 +33,7 @@ export function registerLocationTools(register: ToolRegistrar, cloud: CloudClien
     },
     async (args) => {
       const result = await cloud.request<{ location: CloudLocation }>(`/locations/${args.id}`);
-      let output = JSON.stringify(result.location, null, 2);
-      const warning = cloud.rateLimitWarning();
-      if (warning) output += '\n' + warning;
-      return output;
+      return cloud.formatOutput(result.location);
     },
   );
 }

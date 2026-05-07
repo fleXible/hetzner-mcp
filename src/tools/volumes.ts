@@ -26,10 +26,7 @@ export function registerVolumeTools(register: ToolRegistrar, cloud: CloudClient,
         status: args.status as string | undefined,
         sort: args.sort as string | undefined,
       });
-      let output = JSON.stringify(volumes, null, 2);
-      const warning = cloud.rateLimitWarning();
-      if (warning) output += '\n' + warning;
-      return output;
+      return cloud.formatOutput(volumes);
     },
   );
 
@@ -41,10 +38,7 @@ export function registerVolumeTools(register: ToolRegistrar, cloud: CloudClient,
     },
     async (args) => {
       const result = await cloud.request(`/volumes/${args.id}`);
-      let output = JSON.stringify(result, null, 2);
-      const warning = cloud.rateLimitWarning();
-      if (warning) output += '\n' + warning;
-      return output;
+      return cloud.formatOutput(result);
     },
   );
 
@@ -56,10 +50,7 @@ export function registerVolumeTools(register: ToolRegistrar, cloud: CloudClient,
     },
     async (args) => {
       const actions = await cloud.requestAll(`/volumes/${args.id}/actions`, 'actions');
-      let output = JSON.stringify(actions, null, 2);
-      const warning = cloud.rateLimitWarning();
-      if (warning) output += '\n' + warning;
-      return output;
+      return cloud.formatOutput(actions);
     },
   );
 
@@ -94,10 +85,7 @@ export function registerVolumeTools(register: ToolRegistrar, cloud: CloudClient,
           { method: 'POST', body },
         );
         const action = await cloud.pollAction(result.action.id);
-        let output = JSON.stringify({ volume: result.volume, action }, null, 2);
-        const warning = cloud.rateLimitWarning();
-        if (warning) output += '\n' + warning;
-        return output;
+        return cloud.formatOutput({ volume: result.volume, action });
       },
     );
 
@@ -118,10 +106,7 @@ export function registerVolumeTools(register: ToolRegistrar, cloud: CloudClient,
           method: 'PUT',
           body,
         });
-        let output = JSON.stringify(result, null, 2);
-        const warning = cloud.rateLimitWarning();
-        if (warning) output += '\n' + warning;
-        return output;
+        return cloud.formatOutput(result);
       },
     );
 
@@ -137,10 +122,7 @@ export function registerVolumeTools(register: ToolRegistrar, cloud: CloudClient,
           return '⚠️ Please set confirm to true to delete this volume. This action is irreversible.';
         }
         await cloud.request(`/volumes/${args.id}`, { method: 'DELETE' });
-        let output = `Volume ${args.id} deleted successfully.`;
-        const warning = cloud.rateLimitWarning();
-        if (warning) output += '\n' + warning;
-        return output;
+        return cloud.appendWarning(`Volume ${args.id} deleted successfully.`);
       },
     );
 
@@ -158,10 +140,7 @@ export function registerVolumeTools(register: ToolRegistrar, cloud: CloudClient,
           { method: 'POST', body: { server: args.server, automount: args.automount } },
         );
         const action = await cloud.pollAction(result.action.id);
-        let output = JSON.stringify({ action }, null, 2);
-        const warning = cloud.rateLimitWarning();
-        if (warning) output += '\n' + warning;
-        return output;
+        return cloud.formatOutput({ action });
       },
     );
 
@@ -177,10 +156,7 @@ export function registerVolumeTools(register: ToolRegistrar, cloud: CloudClient,
           { method: 'POST' },
         );
         const action = await cloud.pollAction(result.action.id);
-        let output = JSON.stringify({ action }, null, 2);
-        const warning = cloud.rateLimitWarning();
-        if (warning) output += '\n' + warning;
-        return output;
+        return cloud.formatOutput({ action });
       },
     );
 
@@ -197,10 +173,7 @@ export function registerVolumeTools(register: ToolRegistrar, cloud: CloudClient,
           { method: 'POST', body: { size: args.size } },
         );
         const action = await cloud.pollAction(result.action.id);
-        let output = JSON.stringify({ action }, null, 2);
-        const warning = cloud.rateLimitWarning();
-        if (warning) output += '\n' + warning;
-        return output;
+        return cloud.formatOutput({ action });
       },
     );
 
@@ -217,10 +190,7 @@ export function registerVolumeTools(register: ToolRegistrar, cloud: CloudClient,
           { method: 'POST', body: { delete: args.delete } },
         );
         const action = await cloud.pollAction(result.action.id);
-        let output = JSON.stringify({ action }, null, 2);
-        const warning = cloud.rateLimitWarning();
-        if (warning) output += '\n' + warning;
-        return output;
+        return cloud.formatOutput({ action });
       },
     );
   }

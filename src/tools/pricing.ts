@@ -12,10 +12,7 @@ export function registerPricingTools(register: ToolRegistrar, cloud: CloudClient
     {},
     async () => {
       const result = await cloud.request<{ pricing: unknown }>('/pricing');
-      let output = JSON.stringify(result.pricing, null, 2);
-      const warning = cloud.rateLimitWarning();
-      if (warning) output += '\n' + warning;
-      return output;
+      return cloud.formatOutput(result.pricing);
     },
   );
 }

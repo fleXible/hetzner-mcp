@@ -24,10 +24,7 @@ export function registerFirewallTools(register: ToolRegistrar, cloud: CloudClien
         label_selector: args.label_selector as string | undefined,
         sort: args.sort as string | undefined,
       });
-      let output = JSON.stringify(firewalls, null, 2);
-      const warning = cloud.rateLimitWarning();
-      if (warning) output += '\n' + warning;
-      return output;
+      return cloud.formatOutput(firewalls);
     },
   );
 
@@ -39,10 +36,7 @@ export function registerFirewallTools(register: ToolRegistrar, cloud: CloudClien
     },
     async (args) => {
       const result = await cloud.request(`/firewalls/${args.id}`);
-      let output = JSON.stringify(result, null, 2);
-      const warning = cloud.rateLimitWarning();
-      if (warning) output += '\n' + warning;
-      return output;
+      return cloud.formatOutput(result);
     },
   );
 
@@ -54,10 +48,7 @@ export function registerFirewallTools(register: ToolRegistrar, cloud: CloudClien
     },
     async (args) => {
       const actions = await cloud.requestAll(`/firewalls/${args.id}/actions`, 'actions');
-      let output = JSON.stringify(actions, null, 2);
-      const warning = cloud.rateLimitWarning();
-      if (warning) output += '\n' + warning;
-      return output;
+      return cloud.formatOutput(actions);
     },
   );
 
@@ -80,10 +71,7 @@ export function registerFirewallTools(register: ToolRegistrar, cloud: CloudClien
         if (args.labels) body.labels = JSON.parse(args.labels as string);
 
         const result = await cloud.request('/firewalls', { method: 'POST', body });
-        let output = JSON.stringify(result, null, 2);
-        const warning = cloud.rateLimitWarning();
-        if (warning) output += '\n' + warning;
-        return output;
+        return cloud.formatOutput(result);
       },
     );
 
@@ -104,10 +92,7 @@ export function registerFirewallTools(register: ToolRegistrar, cloud: CloudClien
           method: 'PUT',
           body,
         });
-        let output = JSON.stringify(result, null, 2);
-        const warning = cloud.rateLimitWarning();
-        if (warning) output += '\n' + warning;
-        return output;
+        return cloud.formatOutput(result);
       },
     );
 
@@ -123,10 +108,7 @@ export function registerFirewallTools(register: ToolRegistrar, cloud: CloudClien
           return '⚠️ Please set confirm to true to delete this firewall. This action is irreversible.';
         }
         await cloud.request(`/firewalls/${args.id}`, { method: 'DELETE' });
-        let output = `Firewall ${args.id} deleted successfully.`;
-        const warning = cloud.rateLimitWarning();
-        if (warning) output += '\n' + warning;
-        return output;
+        return cloud.appendWarning(`Firewall ${args.id} deleted successfully.`);
       },
     );
 
@@ -148,10 +130,7 @@ export function registerFirewallTools(register: ToolRegistrar, cloud: CloudClien
         for (const a of result.actions) {
           polled.push(await cloud.pollAction(a.id));
         }
-        let output = JSON.stringify({ actions: polled }, null, 2);
-        const warning = cloud.rateLimitWarning();
-        if (warning) output += '\n' + warning;
-        return output;
+        return cloud.formatOutput({ actions: polled });
       },
     );
 
@@ -172,10 +151,7 @@ export function registerFirewallTools(register: ToolRegistrar, cloud: CloudClien
         for (const a of result.actions) {
           polled.push(await cloud.pollAction(a.id));
         }
-        let output = JSON.stringify({ actions: polled }, null, 2);
-        const warning = cloud.rateLimitWarning();
-        if (warning) output += '\n' + warning;
-        return output;
+        return cloud.formatOutput({ actions: polled });
       },
     );
 
@@ -196,10 +172,7 @@ export function registerFirewallTools(register: ToolRegistrar, cloud: CloudClien
         for (const a of result.actions) {
           polled.push(await cloud.pollAction(a.id));
         }
-        let output = JSON.stringify({ actions: polled }, null, 2);
-        const warning = cloud.rateLimitWarning();
-        if (warning) output += '\n' + warning;
-        return output;
+        return cloud.formatOutput({ actions: polled });
       },
     );
   }

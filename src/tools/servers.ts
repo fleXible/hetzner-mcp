@@ -28,10 +28,7 @@ export function registerServerTools(register: ToolRegistrar, cloud: CloudClient,
         sort: args.sort as string | undefined,
       };
       const servers = await cloud.requestAll<CloudServer>('/servers', 'servers', params);
-      let output = JSON.stringify(servers, null, 2);
-      const warning = cloud.rateLimitWarning();
-      if (warning) output += '\n' + warning;
-      return output;
+      return cloud.formatOutput(servers);
     },
   );
 
@@ -43,10 +40,7 @@ export function registerServerTools(register: ToolRegistrar, cloud: CloudClient,
     },
     async (args) => {
       const result = await cloud.request<{ server: CloudServer }>(`/servers/${args.id}`);
-      let output = JSON.stringify(result.server, null, 2);
-      const warning = cloud.rateLimitWarning();
-      if (warning) output += '\n' + warning;
-      return output;
+      return cloud.formatOutput(result.server);
     },
   );
 
@@ -67,10 +61,7 @@ export function registerServerTools(register: ToolRegistrar, cloud: CloudClient,
           end: args.end as string,
         },
       });
-      let output = JSON.stringify(result.metrics, null, 2);
-      const warning = cloud.rateLimitWarning();
-      if (warning) output += '\n' + warning;
-      return output;
+      return cloud.formatOutput(result.metrics);
     },
   );
 
@@ -147,13 +138,10 @@ export function registerServerTools(register: ToolRegistrar, cloud: CloudClient,
           await cloud.pollAction(result.action.id);
         }
 
-        let output = costInfo + JSON.stringify({
+        return cloud.appendWarning(costInfo + JSON.stringify({
           server: result.server,
           root_password: result.root_password,
-        }, null, 2);
-        const warning = cloud.rateLimitWarning();
-        if (warning) output += '\n' + warning;
-        return output;
+        }, null, 2));
       },
     );
 
@@ -176,10 +164,7 @@ export function registerServerTools(register: ToolRegistrar, cloud: CloudClient,
           method: 'PUT',
           body,
         });
-        let output = JSON.stringify(result.server, null, 2);
-        const warning = cloud.rateLimitWarning();
-        if (warning) output += '\n' + warning;
-        return output;
+        return cloud.formatOutput(result.server);
       },
     );
 
@@ -200,10 +185,7 @@ export function registerServerTools(register: ToolRegistrar, cloud: CloudClient,
         if (result.action) {
           await cloud.pollAction(result.action.id);
         }
-        let output = JSON.stringify(result, null, 2);
-        const warning = cloud.rateLimitWarning();
-        if (warning) output += '\n' + warning;
-        return output;
+        return cloud.formatOutput(result);
       },
     );
   }
